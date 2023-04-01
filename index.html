@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <title>PA#1</title>
+    <style>
+      body {
+        background-color: hsl(0, 0%, 100%);
+      }
+    </style>
+
+    <script src="./Utils/trackball-rotator.js"></script>
+    <script src="./Utils/m4.js"></script>
+    <script src="./shader.gpu"></script>
+    <script src="./main.js"></script>
+  </head>
+  <body onload="init()">
+    <h1>Egor Boyko TP21mp</h1>
+    <h2>A Corrugated Sphere with "Trackball" Mouse Rotation</h2>
+    <label for="eyeSep"> Eye Separation:</label>
+    <input
+      id="eyeSep"
+      type="range"
+      step="1"
+      value="0"
+      onchange="draw()"
+      oninput="this.nextElementSibling.value = this.value"
+    />
+    <output>0</output>
+    <label for="fov"> Field of View:</label>
+    <input
+      id="fov"
+      type="range"
+      step="0.1"
+      value="0"
+      onchange="draw()"
+      oninput="this.nextElementSibling.value = this.value"
+    />
+    <output>0</output>
+    <label for="near"> Near Clipping distance:</label>
+    <input
+      id="near"
+      type="range"
+      step="0.3"
+      value="0"
+      onchange="draw()"
+      oninput="this.nextElementSibling.value = this.value"
+    />
+    <output>0</output>
+    <label for="convergence"> Convergence:</label>
+    <input
+      id="convergence"
+      type="range"
+      step="10"
+      value="0"
+      onchange="draw()"
+      oninput="this.nextElementSibling.value = this.value"
+    />
+    <output>0</output>
+
+    <div id="canvas-holder">
+      <canvas
+        width="1280"
+        height="720"
+        id="webglcanvas"
+        style="background-color: red"
+      ></canvas>
+    </div>
+  </body>
+</html>
