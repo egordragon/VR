@@ -16,7 +16,6 @@ function Model(name) {
   this.count = 0
 
   this.BufferData = function (vertices) {
-    console.log(vertices)
     gl.bindBuffer(gl.ARRAY_BUFFER, this.iVertexBuffer)
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STREAM_DRAW)
 
@@ -28,9 +27,7 @@ function Model(name) {
     gl.vertexAttribPointer(shProgram.iAttribVertex, 3, gl.FLOAT, false, 0, 0)
     gl.enableVertexAttribArray(shProgram.iAttribVertex)
 
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.count)
     gl.uniform4fv(shProgram.iColor, [0, 0, 0, 1])
-    gl.lineWidth(1)
     gl.drawArrays(gl.LINE_STRIP, 0, this.count)
   }
 }
@@ -63,7 +60,7 @@ function draw() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
   /* Set the values of the projection transformation */
-  let projection = m4.perspective(Math.PI / 8, 1, 8, 12)
+  //let projection = m4.perspective(Math.PI / 8, 1, 8, 12)
 
   /* Get the view matrix from the SimpleRotator object.*/
   let modelView = spaceball.getViewMatrix()
@@ -86,23 +83,18 @@ function draw() {
 
   /* Draw the six faces of a cube, with different colors. */
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
-  gl.enable(gl.CULL_FACE)
   // Set up the stereo camera system
   let convrg = 1000.0, // Convergence
-    eyesep = 70.0, // Eye Separation
-    asprat = 1.0, // Aspect Ratio
-    fov = Math.PI / 4, // FOV along Y in degrees
-    near = 10.0, // Near Clipping Distance
-    far = 1000.0 // Far Clipping Distance
+    eyesep = 1.0, // Eye Separation
+    asprat = 1.3, // Aspect Ratio
+    fov = Math.PI / 3, // FOV along Y in degrees
+    near = 4.0, // Near Clipping Distance
+    far = 12.0 // Far Clipping Distance
 
   eyesep = document.getElementById('eyeSep').value
   fov = document.getElementById('fov').value
   near = document.getElementById('near').value - 0.0
-  convrg = document.getElementById('convergence').value * 10
-  console.log(eyesep)
-  console.log(fov)
-  console.log(near)
-  console.log(convrg)
+  convrg = document.getElementById('convergence').value
 
   let translateLeftEye = m4.translation(-eyesep / 2, 0, 0)
   let matAccum0 = m4.multiply(rotateToPointZero, modelView)
@@ -115,7 +107,7 @@ function draw() {
   let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, matrLeftFrustum)
 
-  gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
+  //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
   gl.colorMask(true, false, false, false)
   surface.Draw()
   gl.clear(gl.DEPTH_BUFFER_BIT)
@@ -154,7 +146,7 @@ function ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far) {
   left = (-b * near) / convrg
   right = (c * near) / convrg
 
-  return m4.orthographic(left, right, bottom, top, near, far)
+  return m4.frustum(left, right, bottom, top, near, far)
 }
 
 function ApplyRightFrustum(convrg, eyesep, asprat, fov, near, far) {
@@ -167,7 +159,7 @@ function ApplyRightFrustum(convrg, eyesep, asprat, fov, near, far) {
   left = (-c * near) / convrg
   right = (b * near) / convrg
 
-  return m4.orthographic(left, right, bottom, top, near, far)
+  return m4.frustum(left, right, bottom, top, near, far)
 }
 
 function CreateSurfaceData() {
@@ -177,7 +169,7 @@ function CreateSurfaceData() {
   let R = 2
   let n = 7
   let a = 3
-  let zoom = 8
+  let zoom = 2
 
   //let step = 0.01
   for (let v0 = 0; v0 <= Math.PI; v0 += deltaV0) {
@@ -185,12 +177,12 @@ function CreateSurfaceData() {
       let x = calcX(v0, phi, a, R, n)
       let y = calcY(v0, phi, a, R, n)
       let z = calcZ(v0, R)
-      vertexList.push(x * zoom, y * zoom, z * zoom)
+      vertexList.push(x / zoom, y / zoom, z / zoom)
 
       x = calcX(v0 + deltaV0, phi, a, R, n)
       y = calcY(v0 + deltaV0, phi, a, R, n)
       z = calcZ(v0 + deltaV0, R)
-      vertexList.push(x * zoom, y * zoom, z * zoom)
+      vertexList.push(x / zoom, y / zoom, z / zoom)
     }
   }
   return vertexList
