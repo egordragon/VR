@@ -27,7 +27,7 @@ function Model(name) {
     gl.vertexAttribPointer(shProgram.iAttribVertex, 3, gl.FLOAT, false, 0, 0)
     gl.enableVertexAttribArray(shProgram.iAttribVertex)
 
-    gl.uniform4fv(shProgram.iColor, [0, 0, 0, 1])
+    //gl.uniform4fv(shProgram.iColor, [0, 0, 0, 1])
     gl.drawArrays(gl.LINE_STRIP, 0, this.count)
   }
 }
