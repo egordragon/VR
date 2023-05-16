@@ -99,14 +99,14 @@ function draw() {
   convrg = document.getElementById('convergence').value
 
   let translateLeftEye = m4.translation(-eyesep / 2, 0, 0)
-  let matAccum0 = m4.multiply(rotateToPointZero, modelView)
-  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
-  let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
-  let matAccum2 = m4.multiply(translateToPointZero, matAccum1)
+  let matAccum0 = m4.multiply(orientationRotateMatrix, modelView)
+  let matAccum1 = m4.multiply(rotateToPointZero, matAccum0)
+  let matAccum2 = m4.multiply(translateLeftEye, matAccum1)
+  let matAccum3 = m4.multiply(translateToPointZero, matAccum2)
 
   // First pass for left eye, drawing red component only)
 
-  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
   let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, matrLeftFrustum)
 
@@ -127,13 +127,13 @@ function draw() {
   )
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, matrRightFrustum)
   let translateRightEye = m4.translation(eyesep / 2, 0, 0)
-  matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
-  matAccum1 = m4.multiply(translateRightEye, matAccum3)
-  matAccum2 = m4.multiply(translateToPointZero, matAccum1)
+  matAccum1 = m4.multiply(rotateToPointZero, matAccum0)
+  matAccum2 = m4.multiply(translateRightEye, matAccum1)
+  matAccum3 = m4.multiply(translateToPointZero, matAccum2)
 
   // First pass for left eye, drawing red component only)
 
-  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
 
   gl.colorMask(false, true, true, false)
   surface.Draw()
