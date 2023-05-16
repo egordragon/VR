@@ -4,6 +4,8 @@ let gl // The webgl context.
 let surface // A surface model
 let shProgram // A shader program
 let spaceball // A SimpleRotator object that lets the user rotate the view by mouse.
+let timestamp = 0
+let orientationRotateMatrix = []
 
 function deg2rad(angle) {
   return (angle * Math.PI) / 180
@@ -100,10 +102,17 @@ function draw() {
   let matAccum0 = m4.multiply(rotateToPointZero, modelView)
   let matAccum1 = m4.multiply(translateLeftEye, matAccum0)
   let matAccum2 = m4.multiply(translateToPointZero, matAccum1)
+  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
+  if (orientationRotateMatrix.length == 0) {
+    gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
+  }
 
   // First pass for left eye, drawing red component only)
 
-  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
+  if (orientationRotateMatrix.length == 0) {
+    gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
+  }
   let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, matrLeftFrustum)
 
@@ -126,10 +135,14 @@ function draw() {
   let translateRightEye = m4.translation(eyesep / 2, 0, 0)
   matAccum1 = m4.multiply(translateRightEye, matAccum0)
   matAccum2 = m4.multiply(translateToPointZero, matAccum1)
+  matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
 
   // First pass for left eye, drawing red component only)
 
-  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
+  if (orientationRotateMatrix.length == 0) {
+    gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
+  }
 
   gl.colorMask(false, true, true, false)
   surface.Draw()
@@ -281,5 +294,115 @@ function init() {
 
   spaceball = new TrackballRotator(canvas, draw, 0)
 
+  ReadGyroscope()
   draw()
+}
+
+function ReadGyroscope() {
+  let NS2S = 1.0 / 1000000000.0
+  let sensor = new Gyroscope({ frequency: 60 })
+  sensor.addEventListener('reading', (e) => {
+    //console.log(`Angular velocity along the X-axis ${sensor.x}`)
+    //console.log(`Angular velocity along the Y-axis ${sensor.y}`)
+    //console.log(`Angular velocity along the Z-axis ${sensor.z}`)
+
+    document.getElementById('testx').innerHTML = 'Current x velocity' + sensor.x
+    document.getElementById('testy').innerHTML = 'Current y velocity' + sensor.y
+    document.getElementById('testz').innerHTML = 'Current z velocity' + sensor.z
+
+    if (timestamp != 0.0 && e != null) {
+      let dt = (e.timeStamp - timestamp) * NS2S
+      let x = sensor.x
+      let y = sensor.y
+      let z = sensor.z
+
+      let eps = 0.3
+      let angSpeed = Math.sqrt(x * x + y * y + z * z)
+      if (angSpeed > eps) {
+        x /= angSpeed
+        y /= angSpeed
+        z /= angSpeed
+      }
+      let thetaOverTwo = (angSpeed * dt) / 2.0
+      let sinTheta = Math.sin(thetaOverTwo)
+      let cosTheta = Math.cos(thetaOverTwo)
+
+      deltaRotVec = Array(4)
+      deltaRotVec[0] = sinTheta * x
+      deltaRotVec[1] = sinTheta * y
+      deltaRotVec[2] = sinTheta * z
+      deltaRotVec[3] = cosTheta
+
+      timestamp = e.timeStamp
+      orientationRotateMatrix = Array(9)
+      getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
+      draw()
+    }
+  })
+  sensor.onerror = (e) => {
+    //alert(e.error.name, e.error.message)
+  }
+  sensor.start()
+}
+
+function getRotationMatrixFromVector(R, rotationVector) {
+  let q0,
+    q1,
+    q2,
+    q3,
+    sq_q1,
+    sq_q2,
+    sq_q3,
+    q1_q2,
+    q1_q3,
+    q1_q0,
+    q2_q0,
+    q2_q3,
+    q3_q0
+  q1 = rotationVector[0]
+  q2 = rotationVector[1]
+  q3 = rotationVector[2]
+  if (rotationVector.length >= 4) {
+    q0 = rotationVector[3]
+  } else {
+    q0 = 1 - q1 * q1 - q2 * q2 - q3 * q3
+    q0 = q0 > 0 ? Math.sqrt(q0) : 0
+  }
+  sq_q1 = 2 * q1 * q1
+  sq_q2 = 2 * q2 * q2
+  sq_q3 = 2 * q3 * q3
+  q1_q2 = 2 * q1 * q2
+  q3_q0 = 2 * q3 * q0
+  q1_q3 = 2 * q1 * q3
+  q2_q0 = 2 * q2 * q0
+  q2_q3 = 2 * q2 * q3
+  q1_q0 = 2 * q1 * q0
+  if (R.length == 9) {
+    R[0] = 1 - sq_q2 - sq_q3
+    console.log(R[0])
+    console.log(1 - sq_q2 - sq_q3)
+    R[1] = q1_q2 - q3_q0
+    R[2] = q1_q3 + q2_q0
+    R[3] = q1_q2 + q3_q0
+    R[4] = 1 - sq_q1 - sq_q3
+    R[5] = q2_q3 - q1_q0
+    R[6] = q1_q3 - q2_q0
+    R[7] = q2_q3 + q1_q0
+    R[8] = 1 - sq_q1 - sq_q2
+  } else if (R.length == 16) {
+    R[0] = 1 - sq_q2 - sq_q3
+    R[1] = q1_q2 - q3_q0
+    R[2] = q1_q3 + q2_q0
+    R[3] = 0.0
+    R[4] = q1_q2 + q3_q0
+    R[5] = 1 - sq_q1 - sq_q3
+    R[6] = q2_q3 - q1_q0
+    R[7] = 0.0
+    R[8] = q1_q3 - q2_q0
+    R[9] = q2_q3 + q1_q0
+    R[10] = 1 - sq_q1 - sq_q2
+    R[11] = 0.0
+    R[12] = R[13] = R[14] = 0.0
+    R[15] = 1.0
+  }
 }
