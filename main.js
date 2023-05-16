@@ -100,19 +100,13 @@ function draw() {
 
   let translateLeftEye = m4.translation(-eyesep / 2, 0, 0)
   let matAccum0 = m4.multiply(rotateToPointZero, modelView)
-  let matAccum1 = m4.multiply(translateLeftEye, matAccum0)
+  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
+  let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
   let matAccum2 = m4.multiply(translateToPointZero, matAccum1)
-  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
-  if (orientationRotateMatrix.length == 0) {
-    gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
-  }
 
   // First pass for left eye, drawing red component only)
 
-  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
-  if (orientationRotateMatrix.length == 0) {
-    gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
-  }
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
   let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, matrLeftFrustum)
 
@@ -133,16 +127,13 @@ function draw() {
   )
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, matrRightFrustum)
   let translateRightEye = m4.translation(eyesep / 2, 0, 0)
-  matAccum1 = m4.multiply(translateRightEye, matAccum0)
+  matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
+  matAccum1 = m4.multiply(translateRightEye, matAccum3)
   matAccum2 = m4.multiply(translateToPointZero, matAccum1)
-  matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
 
   // First pass for left eye, drawing red component only)
 
-  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
-  if (orientationRotateMatrix.length == 0) {
-    gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
-  }
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
 
   gl.colorMask(false, true, true, false)
   surface.Draw()
