@@ -297,12 +297,9 @@ function ReadGyroscope() {
     //console.log(`Angular velocity along the Y-axis ${sensor.y}`)
     //console.log(`Angular velocity along the Z-axis ${sensor.z}`)
 
-    document.getElementById('testx').innerHTML =
-      'Current x velocity ' + sensor.x
-    document.getElementById('testy').innerHTML =
-      'Current y velocity ' + sensor.y
-    document.getElementById('testz').innerHTML =
-      'Current z velocity ' + sensor.z
+    document.getElementById('testx').innerHTML = 'Current x velocity' + sensor.x
+    document.getElementById('testy').innerHTML = 'Current y velocity' + sensor.y
+    document.getElementById('testz').innerHTML = 'Current z velocity' + sensor.z
 
     if (timestamp != 0.0 && e != null) {
       let dt = (e.timeStamp - timestamp) * NS2S
@@ -328,7 +325,7 @@ function ReadGyroscope() {
       deltaRotVec[3] = cosTheta
 
       timestamp = e.timeStamp
-      orientationRotateMatrix = Array(16)
+      orientationRotateMatrix = Array(9)
       getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
       draw()
     }
