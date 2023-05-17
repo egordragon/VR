@@ -291,15 +291,18 @@ function init() {
 
 function ReadGyroscope() {
   let NS2S = 1.0 / 1000000000.0
-  let sensor = new Gyroscope({ frequency: 60 })
+  let sensor = new Gyroscope({ frequency: 100 })
   sensor.addEventListener('reading', (e) => {
     //console.log(`Angular velocity along the X-axis ${sensor.x}`)
     //console.log(`Angular velocity along the Y-axis ${sensor.y}`)
     //console.log(`Angular velocity along the Z-axis ${sensor.z}`)
 
-    document.getElementById('testx').innerHTML = 'Current x velocity' + sensor.x
-    document.getElementById('testy').innerHTML = 'Current y velocity' + sensor.y
-    document.getElementById('testz').innerHTML = 'Current z velocity' + sensor.z
+    document.getElementById('testx').innerHTML =
+      'Angular velocity along the X-axis' + sensor.x
+    document.getElementById('testy').innerHTML =
+      'Angular velocity along the Y-axis' + sensor.y
+    document.getElementById('testz').innerHTML =
+      'Angular velocity along the Z-axis' + sensor.z
 
     if (timestamp != 0.0 && e != null) {
       let dt = (e.timeStamp - timestamp) * NS2S
