@@ -58,7 +58,7 @@ function ShaderProgram(name, program) {
  * way to draw with WebGL.  Here, the geometry is so simple that it doesn't matter.)
  */
 function draw() {
-  gl.clearColor(1, 1, 1, 1)
+  gl.clearColor(0, 0, 0, 1)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
   /* Set the values of the projection transformation */
@@ -89,14 +89,13 @@ function draw() {
   let matAccum0 = m4.multiply(rotateToPointZero, modelView)
   //let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
   let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
-  //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
-  let projectionMatrix = m4.multiply(orientationRotateMatrix, projection)
+  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
 
   // First pass for left eye, drawing red component only)
 
-  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
   //let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
-  gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projectionMatrix)
+  gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projection)
 
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
   //gl.colorMask(true, false, false, false)
@@ -281,12 +280,8 @@ function init() {
 
 function ReadGyroscope() {
   let NS2S = 1.0 / 1000000000.0
-  let sensor = new Gyroscope({ frequency: 10 })
-  sensor.addEventListener('reading', (event) => {
-    //console.log(`Angular velocity along the X-axis ${sensor.x}`)
-    //console.log(`Angular velocity along the Y-axis ${sensor.y}`)
-    //console.log(`Angular velocity along the Z-axis ${sensor.z}`)
-
+  let sensor = new Gyroscope({ frequency: 5 })
+  sensor.addEventListener('reading', (e) => {
     document.getElementById('velocity_x').innerHTML =
       'Angular velocity along the X-axis ' + sensor.x
     document.getElementById('velocity_y').innerHTML =
@@ -294,11 +289,11 @@ function ReadGyroscope() {
     document.getElementById('velocity_z').innerHTML =
       'Angular velocity along the Z-axis ' + sensor.z
 
-    if (event != null) {
-      let current = event.timeStamp
+    if (e != null) {
+      let current = e.timeStamp
       let dt = (current - timestamp) * NS2S
-      document.getElementById('timestamp_test').innerHTML =
-        'Timestamp triggered: ' + current
+      // document.getElementById('timestamp_test').innerHTML =
+      //   'Timestamp triggered: ' + current
       let x = sensor.x
       let y = sensor.y
       let z = sensor.z
