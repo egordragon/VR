@@ -291,7 +291,7 @@ function init() {
 
 function ReadGyroscope() {
   let NS2S = 1.0 / 1000000000.0
-  let sensor = new Gyroscope({ frequency: 100 })
+  let sensor = new Gyroscope({ frequency: 10 })
   sensor.addEventListener('reading', (e) => {
     //console.log(`Angular velocity along the X-axis ${sensor.x}`)
     //console.log(`Angular velocity along the Y-axis ${sensor.y}`)
