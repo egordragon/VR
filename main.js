@@ -4,7 +4,7 @@ let gl // The webgl context.
 let surface // A surface model
 let shProgram // A shader program
 let spaceball // A SimpleRotator object that lets the user rotate the view by mouse.
-let timestamp = 0
+let timestamp = Date.now()
 let orientationRotateMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
 
 function deg2rad(angle) {
@@ -294,10 +294,11 @@ function ReadGyroscope() {
     document.getElementById('velocity_z').innerHTML =
       'Angular velocity along the Z-axis ' + sensor.z
 
-    if (e.timeStamp != 0.0 && e != null) {
-      let dt = (e.timeStamp - timestamp) * NS2S
+    if (e != null) {
+      let current = Date.now()
+      let dt = (current - timestamp) * NS2S
       document.getElementById('timestamp_test').innerHTML =
-        'Timestamp triggered: ' + e.timeStamp
+        'Timestamp triggered: ' + current
       let x = sensor.x
       let y = sensor.y
       let z = sensor.z
@@ -319,7 +320,7 @@ function ReadGyroscope() {
       deltaRotVec[2] = sinTheta * z
       deltaRotVec[3] = cosTheta
 
-      timestamp = e.timeStamp
+      timestamp = current
       getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
       draw()
     }
