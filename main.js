@@ -293,13 +293,11 @@ function ReadGyroscope() {
       'Angular velocity along the Y-axis ' + sensor.y
     document.getElementById('velocity_z').innerHTML =
       'Angular velocity along the Z-axis ' + sensor.z
-    document.getElementById('timestamp_test').innerHTML =
-      'Timestamp triggered: ' + timestamp
 
-    if (timestamp != 0.0 && e != null) {
+    if (e.timeStamp != 0.0 && e != null) {
       let dt = (e.timeStamp - timestamp) * NS2S
       document.getElementById('timestamp_test').innerHTML =
-        'Timestamp triggered: ' + timestamp
+        'Timestamp triggered: ' + e.timeStamp
       let x = sensor.x
       let y = sensor.y
       let z = sensor.z
