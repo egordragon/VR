@@ -4,7 +4,7 @@ let gl // The webgl context.
 let surface // A surface model
 let shProgram // A shader program
 let spaceball // A SimpleRotator object that lets the user rotate the view by mouse.
-let timestamp = Date.now()
+let timestamp = 0
 let orientationRotateMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
 
 function deg2rad(angle) {
@@ -282,7 +282,7 @@ function init() {
 function ReadGyroscope() {
   let NS2S = 1.0 / 1000000000.0
   let sensor = new Gyroscope({ frequency: 10 })
-  sensor.addEventListener('reading', (e) => {
+  sensor.addEventListener('reading', (event) => {
     //console.log(`Angular velocity along the X-axis ${sensor.x}`)
     //console.log(`Angular velocity along the Y-axis ${sensor.y}`)
     //console.log(`Angular velocity along the Z-axis ${sensor.z}`)
@@ -294,11 +294,11 @@ function ReadGyroscope() {
     document.getElementById('velocity_z').innerHTML =
       'Angular velocity along the Z-axis ' + sensor.z
 
-    if (e != null) {
-      let current = e.timeStamp
+    if (event != null) {
+      let current = event.timeStamp
       let dt = (current - timestamp) * NS2S
       document.getElementById('timestamp_test').innerHTML =
-        'Timestamp triggered: ' + '1'
+        'Timestamp triggered: ' + current
       let x = sensor.x
       let y = sensor.y
       let z = sensor.z
