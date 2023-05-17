@@ -6,6 +6,7 @@ let shProgram // A shader program
 let spaceball // A SimpleRotator object that lets the user rotate the view by mouse.
 let timestamp = 0
 let orientationRotateMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+let accumTimes = 0
 
 function deg2rad(angle) {
   return (angle * Math.PI) / 180
@@ -58,6 +59,7 @@ function ShaderProgram(name, program) {
  * way to draw with WebGL.  Here, the geometry is so simple that it doesn't matter.)
  */
 function draw() {
+  accumTimes += 1
   gl.clearColor(0, 0, 0, 1)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
@@ -292,8 +294,8 @@ function ReadGyroscope() {
     if (e != null) {
       let current = e.timeStamp
       let dt = (current - timestamp) * NS2S
-      // document.getElementById('timestamp_test').innerHTML =
-      //   'Timestamp triggered: ' + current
+      document.getElementById('timestamp_test').innerHTML =
+        'Times triggered: ' + accumTimes
       let x = sensor.x
       let y = sensor.y
       let z = sensor.z
