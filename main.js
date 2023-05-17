@@ -296,6 +296,8 @@ function ReadGyroscope() {
 
     if (timestamp != 0.0 && e != null) {
       let dt = (e.timeStamp - timestamp) * NS2S
+      document.getElementById('timestamp_test').innerHTML =
+        'Timestamp triggered: ' + e.timeStamp
       let x = sensor.x
       let y = sensor.y
       let z = sensor.z
