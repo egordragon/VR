@@ -295,10 +295,10 @@ function ReadGyroscope() {
       'Angular velocity along the Z-axis ' + sensor.z
 
     if (e != null) {
-      let current = Date.now()
+      let current = e.timeStamp
       let dt = (current - timestamp) * NS2S
       document.getElementById('timestamp_test').innerHTML =
-        'Timestamp triggered: ' + current
+        'Timestamp triggered: ' + '1'
       let x = sensor.x
       let y = sensor.y
       let z = sensor.z
