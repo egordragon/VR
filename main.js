@@ -75,7 +75,7 @@ function draw() {
 
   // /* Multiply the projection matrix times the modelview matrix to give the
   //      combined transformation matrix, and send that to the shader program. */
-  let modelViewProjection = m4.multiply(projection, matAccum1)
+  //let modelViewProjection = m4.multiply(projection, matAccum1)
 
   // gl.uniformMatrix4fv(
   //   shProgram.iModelViewProjectionMatrix,
@@ -175,7 +175,7 @@ function CreateSurfaceData() {
   let R = 2
   let n = 7
   let a = 3
-  let zoom = 2
+  let zoom = 5
 
   //let step = 0.01
   for (let v0 = 0; v0 <= Math.PI; v0 += deltaV0) {
