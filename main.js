@@ -318,7 +318,6 @@ function ReadGyroscope() {
       deltaRotVec[3] = cosTheta
 
       timestamp = e.timeStamp
-      orientationRotateMatrix = Array(9)
       getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
       draw()
     }
