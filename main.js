@@ -5,7 +5,7 @@ let surface // A surface model
 let shProgram // A shader program
 let spaceball // A SimpleRotator object that lets the user rotate the view by mouse.
 let timestamp = 0
-let orientationRotateMatrix = []
+let orientationRotateMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
 
 function deg2rad(angle) {
   return (angle * Math.PI) / 180
@@ -85,61 +85,49 @@ function draw() {
 
   /* Draw the six faces of a cube, with different colors. */
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
-  // Set up the stereo camera system
-  let convrg = 1000.0, // Convergence
-    eyesep = 1.0, // Eye Separation
-    asprat = 1.3, // Aspect Ratio
-    fov = Math.PI / 3, // FOV along Y in degrees
-    near = 4.0, // Near Clipping Distance
-    far = 12.0 // Far Clipping Distance
 
-  eyesep = document.getElementById('eyeSep').value
-  fov = document.getElementById('fov').value
-  near = document.getElementById('near').value - 0.0
-  convrg = document.getElementById('convergence').value
-
-  //let translateLeftEye = m4.translation(-eyesep / 2, 0, 0)
   let matAccum0 = m4.multiply(rotateToPointZero, modelView)
   //let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
   let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
-  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
-  let projectionMatrix = m4.multiply(projection, matAccum3)
+  //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
+  let projectionMatrix = m4.multiply(orientationRotateMatrix, projection)
 
   // First pass for left eye, drawing red component only)
 
-  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
   //let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projectionMatrix)
 
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
-  gl.colorMask(true, false, false, false)
+  //gl.colorMask(true, false, false, false)
+  gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
   surface.Draw()
-  gl.clear(gl.DEPTH_BUFFER_BIT)
+  //gl.clear(gl.DEPTH_BUFFER_BIT)
 
-  // Second pass for right eye, drawing blue+green component only
+  // // Second pass for right eye, drawing blue+green component only
 
-  let matrRightFrustum = ApplyRightFrustum(
-    convrg,
-    eyesep,
-    asprat,
-    fov,
-    near,
-    far
-  )
-  //let translateRightEye = m4.translation(eyesep / 2, 0, 0)
-  // matAccum2 = m4.multiply(translateToPointZero, matAccum0)
-  // matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
-  // projectionMatrix = m4.multiply(projection, matAccum3)
+  // let matrRightFrustum = ApplyRightFrustum(
+  //   convrg,
+  //   eyesep,
+  //   asprat,
+  //   fov,
+  //   near,
+  //   far
+  // )
+  // //let translateRightEye = m4.translation(eyesep / 2, 0, 0)
+  // // matAccum2 = m4.multiply(translateToPointZero, matAccum0)
+  // // matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
+  // // projectionMatrix = m4.multiply(projection, matAccum3)
 
-  // // First pass for left eye, drawing red component only)
+  // // // First pass for left eye, drawing red component only)
 
-  // gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
-  // //let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
-  // gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projectionMatrix)
+  // // gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
+  // // //let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
+  // // gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projectionMatrix)
 
-  gl.colorMask(false, true, true, false)
-  surface.Draw()
-  gl.colorMask(true, true, true, true)
+  // gl.colorMask(false, true, true, false)
+  // surface.Draw()
+  // gl.colorMask(true, true, true, true)
 }
 
 function ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far) {
@@ -175,7 +163,7 @@ function CreateSurfaceData() {
   let R = 2
   let n = 7
   let a = 3
-  let zoom = 5
+  let zoom = 3
 
   //let step = 0.01
   for (let v0 = 0; v0 <= Math.PI; v0 += deltaV0) {
@@ -299,11 +287,11 @@ function ReadGyroscope() {
     //console.log(`Angular velocity along the Y-axis ${sensor.y}`)
     //console.log(`Angular velocity along the Z-axis ${sensor.z}`)
 
-    document.getElementById('testx').innerHTML =
+    document.getElementById('velocity_x').innerHTML =
       'Angular velocity along the X-axis ' + sensor.x
-    document.getElementById('testy').innerHTML =
+    document.getElementById('velocity_y').innerHTML =
       'Angular velocity along the Y-axis ' + sensor.y
-    document.getElementById('testz').innerHTML =
+    document.getElementById('velocity_z').innerHTML =
       'Angular velocity along the Z-axis ' + sensor.z
 
     if (timestamp != 0.0 && e != null) {
