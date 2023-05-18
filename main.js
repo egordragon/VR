@@ -347,7 +347,7 @@ function ReadGyroscope() {
     deltaRotVec[0] = sinTheta * x * 10
     deltaRotVec[1] = sinTheta * y * 10
     deltaRotVec[2] = sinTheta * z * 10
-    deltaRotVec[3] = cosTheta
+    deltaRotVec[3] = 1
 
     let deltaRotationMatrix = Array(16)
 
