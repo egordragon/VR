@@ -87,10 +87,11 @@ function draw() {
 
   /* Draw the six faces of a cube, with different colors. */
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
-  let matAccum3 = m4.multiply(orientationRotateMatrix, modelView)
-  let matAccum0 = m4.multiply(rotateToPointZero, matAccum3)
+
+  let matAccum0 = m4.multiply(rotateToPointZero, modelView)
   //let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
   let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
+  let matAccum3 = m4.multiply(orientationRotateMatrix, projection)
 
   document.getElementById('matrix0').innerHTML =
     'Matrix 0 elem ' + orientationRotateMatrix[0]
@@ -123,13 +124,13 @@ function draw() {
   document.getElementById('matrix14').innerHTML =
     'Matrix 14 elem ' + orientationRotateMatrix[14]
   document.getElementById('matrix15').innerHTML =
-    'Matrix 155 elem ' + orientationRotateMatrix[15]
+    'Matrix 151 elem ' + orientationRotateMatrix[15]
 
   // First pass for left eye, drawing red component only)
 
   gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
   //let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
-  gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projection)
+  gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, matAccum3)
 
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
   //gl.colorMask(true, false, false, false)
