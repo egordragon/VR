@@ -288,8 +288,8 @@ function ReadGyroscope() {
       'Angular velocity along the X-axis ' + sensor.x
     document.getElementById('velocity_y').innerHTML =
       'Angular velocity along the Y-axis ' + sensor.y
-    document.getElementById('velocity_z').innerHTML =
-      'Angular velocity along the Z-axis ' + sensor.z
+    // document.getElementById('velocity_z').innerHTML =
+    //   'Angular velocity along the Z-axis ' + sensor.z
     let current = e.timeStamp
     let dt = (current - timestamp) * NS2S
     document.getElementById('timestamp_test').innerHTML =
@@ -305,11 +305,13 @@ function ReadGyroscope() {
       y /= angSpeed
       z /= angSpeed
     }
+    document.getElementById('velocity_z').innerHTML =
+      'Angular velocity along the Z-axiss ' + sensor.z
     let thetaOverTwo = (angSpeed * dt) / 2.0
     let sinTheta = Math.sin(thetaOverTwo)
     let cosTheta = Math.cos(thetaOverTwo)
 
-    deltaRotVec = Array(4)
+    let deltaRotVec = Array(4)
     deltaRotVec[0] = sinTheta * x
     deltaRotVec[1] = sinTheta * y
     deltaRotVec[2] = sinTheta * z
@@ -319,7 +321,7 @@ function ReadGyroscope() {
       'Angular velocity along the Z-axiss ' + sensor.z
     timestamp = current
     getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
-    draw
+    draw()
   })
   sensor.onerror = (e) => {
     //alert(e.error.name, e.error.message)
