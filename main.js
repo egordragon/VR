@@ -89,10 +89,11 @@ function draw() {
   /* Draw the six faces of a cube, with different colors. */
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
 
-  let matAccum0 = m4.multiply(rotateToPointZero, orientationRotateMatrix)
+  let matAccum0 = m4.multiply(rotateToPointZero, modelView)
   //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
   //let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
   let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
+  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
   console.log(matAccum0)
 
   document.getElementById('matrix0').innerHTML =
@@ -130,7 +131,7 @@ function draw() {
 
   // First pass for left eye, drawing red component only)
 
-  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
   //let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projection)
 
@@ -343,10 +344,10 @@ function ReadGyroscope() {
     let cosTheta = Math.cos(thetaOverTwo)
 
     let deltaRotVec = Array(4)
-    deltaRotVec[0] = sinTheta * x
-    deltaRotVec[1] = sinTheta * y
-    deltaRotVec[2] = sinTheta * z
-    deltaRotVec[3] = cosTheta
+    deltaRotVec[0] = sinTheta * x * 60
+    deltaRotVec[1] = sinTheta * y * 60
+    deltaRotVec[2] = sinTheta * z * 60
+    deltaRotVec[3] = cosTheta * 60
 
     let deltaRotationMatrix = Array(16)
 
