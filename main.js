@@ -353,8 +353,8 @@ function ReadGyroscope() {
     timestamp = current
     getRotationMatrixFromVector(deltaRotationMatrix, deltaRotVec)
     orientationRotateMatrix = m4.multiply(
-      deltaRotationMatrix,
-      orientationRotateMatrix
+      orientationRotateMatrix,
+      deltaRotationMatrix
     )
     draw()
   })
