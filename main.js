@@ -341,10 +341,10 @@ function ReadGyroscope() {
     let cosTheta = Math.cos(thetaOverTwo)
 
     let deltaRotVec = Array(4)
-    deltaRotVec[0] = sinTheta * x
-    deltaRotVec[1] = sinTheta * y
-    deltaRotVec[2] = sinTheta * z
-    deltaRotVec[3] = cosTheta
+    deltaRotVec[0] = sinTheta * x * 30
+    deltaRotVec[1] = sinTheta * y * 30
+    deltaRotVec[2] = sinTheta * z * 30
+    deltaRotVec[3] = cosTheta * 30
 
     timestamp = current
     getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
