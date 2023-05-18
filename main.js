@@ -5,8 +5,7 @@ let surface // A surface model
 let shProgram // A shader program
 let spaceball // A SimpleRotator object that lets the user rotate the view by mouse.
 let timestamp = 0
-// let orientationRotateMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-let orientationRotateMatrix = [1, 0, 0, 0, 1, 0, 0, 0, 1]
+let orientationRotateMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
 let accumTimes = 0
 
 function deg2rad(angle) {
@@ -95,7 +94,7 @@ function draw() {
   //let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
   let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
   let matAccum2 = m4.multiply(translateToPointZero, matAccum3)
-  console.log(matAccum0)
+  console.log(matAccum3)
 
   // document.getElementById('matrix0').innerHTML =
   //   'Matrix 0 elem ' + orientationRotateMatrix[0]
@@ -348,7 +347,7 @@ function ReadGyroscope() {
     deltaRotVec[0] = sinTheta * x
     deltaRotVec[1] = sinTheta * y
     deltaRotVec[2] = sinTheta * z
-    deltaRotVec[3] = cosTheta
+    deltaRotVec[3] = sinTheta * z
 
     let deltaRotationMatrix = Array(9)
 
