@@ -93,8 +93,7 @@ function draw() {
   //let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
   let matAccum2 = m4.multiply(translateToPointZero, matAccum3)
 
-  document.getElementById('matrix0').innerHTML =
-    'Matrix 0 elem ' + orientationRotateMatrix[0]
+  document.getElementById('matrix0').innerHTML = 'Matrix 0 elem1 ' + matAccum0
   document.getElementById('matrix1').innerHTML =
     'Matrix 1 elem ' + orientationRotateMatrix[1]
   document.getElementById('matrix2').innerHTML =
