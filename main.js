@@ -5,7 +5,8 @@ let surface // A surface model
 let shProgram // A shader program
 let spaceball // A SimpleRotator object that lets the user rotate the view by mouse.
 let timestamp = 0
-let orientationRotateMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+// let orientationRotateMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+let orientationRotateMatrix = [1, 0, 0, 0, 1, 0, 0, 0, 1]
 let accumTimes = 0
 
 function deg2rad(angle) {
@@ -96,38 +97,38 @@ function draw() {
   let matAccum2 = m4.multiply(translateToPointZero, matAccum3)
   console.log(matAccum0)
 
-  document.getElementById('matrix0').innerHTML =
-    'Matrix 0 elem ' + orientationRotateMatrix[0]
-  document.getElementById('matrix1').innerHTML =
-    'Matrix 1 elem ' + orientationRotateMatrix[1]
-  document.getElementById('matrix2').innerHTML =
-    'Matrix 2 elem ' + orientationRotateMatrix[2]
-  document.getElementById('matrix3').innerHTML =
-    'Matrix 3 elem ' + orientationRotateMatrix[3]
-  document.getElementById('matrix4').innerHTML =
-    'Matrix 4 elem ' + orientationRotateMatrix[4]
-  document.getElementById('matrix5').innerHTML =
-    'Matrix 5 elem ' + orientationRotateMatrix[5]
-  document.getElementById('matrix6').innerHTML =
-    'Matrix 6 elem ' + orientationRotateMatrix[6]
-  document.getElementById('matrix7').innerHTML =
-    'Matrix 7 elem ' + orientationRotateMatrix[7]
-  document.getElementById('matrix8').innerHTML =
-    'Matrix 8 elem ' + orientationRotateMatrix[8]
-  document.getElementById('matrix9').innerHTML =
-    'Matrix 9 elem ' + orientationRotateMatrix[9]
-  document.getElementById('matrix10').innerHTML =
-    'Matrix 10 elem ' + orientationRotateMatrix[10]
-  document.getElementById('matrix11').innerHTML =
-    'Matrix 11 elem ' + orientationRotateMatrix[11]
-  document.getElementById('matrix12').innerHTML =
-    'Matrix 12 elem ' + orientationRotateMatrix[12]
-  document.getElementById('matrix13').innerHTML =
-    'Matrix 13 elem ' + orientationRotateMatrix[13]
-  document.getElementById('matrix14').innerHTML =
-    'Matrix 14 elem ' + orientationRotateMatrix[14]
-  document.getElementById('matrix15').innerHTML =
-    'Matrix 151 elem ' + orientationRotateMatrix[15]
+  // document.getElementById('matrix0').innerHTML =
+  //   'Matrix 0 elem ' + orientationRotateMatrix[0]
+  // document.getElementById('matrix1').innerHTML =
+  //   'Matrix 1 elem ' + orientationRotateMatrix[1]
+  // document.getElementById('matrix2').innerHTML =
+  //   'Matrix 2 elem ' + orientationRotateMatrix[2]
+  // document.getElementById('matrix3').innerHTML =
+  //   'Matrix 3 elem ' + orientationRotateMatrix[3]
+  // document.getElementById('matrix4').innerHTML =
+  //   'Matrix 4 elem ' + orientationRotateMatrix[4]
+  // document.getElementById('matrix5').innerHTML =
+  //   'Matrix 5 elem ' + orientationRotateMatrix[5]
+  // document.getElementById('matrix6').innerHTML =
+  //   'Matrix 6 elem ' + orientationRotateMatrix[6]
+  // document.getElementById('matrix7').innerHTML =
+  //   'Matrix 7 elem ' + orientationRotateMatrix[7]
+  // document.getElementById('matrix8').innerHTML =
+  //   'Matrix 8 elem ' + orientationRotateMatrix[8]
+  // document.getElementById('matrix9').innerHTML =
+  //   'Matrix 9 elem ' + orientationRotateMatrix[9]
+  // document.getElementById('matrix10').innerHTML =
+  //   'Matrix 10 elem ' + orientationRotateMatrix[10]
+  // document.getElementById('matrix11').innerHTML =
+  //   'Matrix 11 elem ' + orientationRotateMatrix[11]
+  // document.getElementById('matrix12').innerHTML =
+  //   'Matrix 12 elem ' + orientationRotateMatrix[12]
+  // document.getElementById('matrix13').innerHTML =
+  //   'Matrix 13 elem ' + orientationRotateMatrix[13]
+  // document.getElementById('matrix14').innerHTML =
+  //   'Matrix 14 elem ' + orientationRotateMatrix[14]
+  // document.getElementById('matrix15').innerHTML =
+  //   'Matrix 151 elem ' + orientationRotateMatrix[15]
 
   // First pass for left eye, drawing red component only)
 
@@ -349,13 +350,13 @@ function ReadGyroscope() {
     deltaRotVec[2] = sinTheta * z
     deltaRotVec[3] = cosTheta
 
-    let deltaRotationMatrix = Array(16)
+    let deltaRotationMatrix = Array(9)
 
     timestamp = current
     getRotationMatrixFromVector(deltaRotationMatrix, deltaRotVec)
     orientationRotateMatrix = m4.multiply(
-      orientationRotateMatrix,
-      deltaRotationMatrix
+      deltaRotationMatrix,
+      orientationRotateMatrix
     )
     draw()
   })
