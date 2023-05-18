@@ -49,6 +49,8 @@ function ShaderProgram(name, program) {
   // Location of the uniform matrix representing projection transformation.
   this.iProjectionMatrix = -1
 
+  this.iRotationMatrix = -1
+
   this.Use = function () {
     gl.useProgram(this.prog)
   }
@@ -68,7 +70,6 @@ function draw() {
 
   /* Get the view matrix from the SimpleRotator object.*/
   let modelView = spaceball.getViewMatrix()
-  console.log(modelView)
 
   let rotateToPointZero = m4.axisRotation([0.707, 0.707, 0], 0.7)
   let translateToPointZero = m4.translation(0, 0, -10)
@@ -133,6 +134,7 @@ function draw() {
   gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
   //let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projection)
+  gl.uniformMatrix4fv(shProgram.iRotationMatrix, false, orientationRotateMatrix)
 
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
   //gl.colorMask(true, false, false, false)
@@ -246,6 +248,7 @@ function initGL() {
   shProgram.iAttribVertex = gl.getAttribLocation(prog, 'vertex')
   shProgram.iModelViewMatrix = gl.getUniformLocation(prog, 'ModelViewMatrix')
   shProgram.iProjectionMatrix = gl.getUniformLocation(prog, 'ProjectionMatrix')
+  shProgram.iRotationMatrix = gl.getUniformLocation(prog, 'RotationMatrix')
   shProgram.iColor = gl.getUniformLocation(prog, 'color')
 
   surface = new Model('Surface')
