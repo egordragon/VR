@@ -346,8 +346,14 @@ function ReadGyroscope() {
     deltaRotVec[2] = sinTheta * z * 100
     deltaRotVec[3] = cosTheta * 100
 
+    let deltaRotationMatrix = Array(16)
+
     timestamp = current
-    getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
+    getRotationMatrixFromVector(deltaRotationMatrix, deltaRotVec)
+    orientationRotateMatrix = m4.multiply(
+      deltaRotationMatrix,
+      orientationRotateMatrix
+    )
     draw()
   })
   sensor.onerror = (e) => {
