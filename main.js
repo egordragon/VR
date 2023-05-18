@@ -90,11 +90,11 @@ function draw() {
   /* Draw the six faces of a cube, with different colors. */
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
 
-  let matAccum0 = m4.multiply(rotateToPointZero, modelView)
+  let matAccum0 = m4.multiply(rotateToPointZero, orientationRotateMatrix)
   //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
   //let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
-  let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
-  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
+  let matAccum3 = m4.multiply(translateToPointZero, matAccum0)
+  //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
 
   document.getElementById('matrix0').innerHTML =
     'Matrix 0 elem ' + orientationRotateMatrix[0]
@@ -134,7 +134,7 @@ function draw() {
   gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
   //let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projection)
-  gl.uniformMatrix4fv(shProgram.iRotationMatrix, false, orientationRotateMatrix)
+  //gl.uniformMatrix4fv(shProgram.iRotationMatrix, false, orientationRotateMatrix)
 
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
   //gl.colorMask(true, false, false, false)
@@ -248,7 +248,7 @@ function initGL() {
   shProgram.iAttribVertex = gl.getAttribLocation(prog, 'vertex')
   shProgram.iModelViewMatrix = gl.getUniformLocation(prog, 'ModelViewMatrix')
   shProgram.iProjectionMatrix = gl.getUniformLocation(prog, 'ProjectionMatrix')
-  shProgram.iRotationMatrix = gl.getUniformLocation(prog, 'RotationMatrix')
+  //shProgram.iRotationMatrix = gl.getUniformLocation(prog, 'RotationMatrix')
   shProgram.iColor = gl.getUniformLocation(prog, 'color')
 
   surface = new Model('Surface')
@@ -320,7 +320,7 @@ function init() {
 
 function ReadGyroscope() {
   let NS2S = 1.0 / 1000000000.0
-  let sensor = new Gyroscope({ frequency: 60 })
+  let sensor = new Gyroscope({ frequency: 10 })
   sensor.addEventListener('reading', (e) => {
     document.getElementById('velocity_x').innerHTML =
       'Angular velocity along the X-axis ' + sensor.x
@@ -346,9 +346,9 @@ function ReadGyroscope() {
     let cosTheta = Math.cos(thetaOverTwo)
 
     let deltaRotVec = Array(4)
-    deltaRotVec[0] = sinTheta * x * 80
-    deltaRotVec[1] = sinTheta * y * 80
-    deltaRotVec[2] = sinTheta * z * 80
+    deltaRotVec[0] = sinTheta * x * 100
+    deltaRotVec[1] = sinTheta * y * 100
+    deltaRotVec[2] = sinTheta * z * 100
     deltaRotVec[3] = cosTheta
 
     let deltaRotationMatrix = Array(16)
@@ -401,8 +401,6 @@ function getRotationMatrixFromVector(R, rotationVector) {
   q1_q0 = 2 * q1 * q0
   if (R.length == 9) {
     R[0] = 1 - sq_q2 - sq_q3
-    console.log(R[0])
-    console.log(1 - sq_q2 - sq_q3)
     R[1] = q1_q2 - q3_q0
     R[2] = q1_q3 + q2_q0
     R[3] = q1_q2 + q3_q0
