@@ -325,7 +325,7 @@ function GyroscopeHandler(e) {
 
   timestamp = current
   getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
-  draw
+  draw()
   //let draw = draw()
 }
 
