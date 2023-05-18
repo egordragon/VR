@@ -122,8 +122,8 @@ function draw() {
     'Matrix 13 elem ' + orientationRotateMatrix[13]
   document.getElementById('matrix14').innerHTML =
     'Matrix 14 elem ' + orientationRotateMatrix[14]
-  document.getElementById('matrix155').innerHTML =
-    'Matrix 15 elem ' + orientationRotateMatrix[15]
+  document.getElementById('matrix15').innerHTML =
+    'Matrix 155 elem ' + orientationRotateMatrix[15]
 
   // First pass for left eye, drawing red component only)
 
