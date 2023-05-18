@@ -284,48 +284,45 @@ function ReadGyroscope() {
   let NS2S = 1.0 / 1000000000.0
   let sensor = new Gyroscope({ frequency: 5 })
   sensor.addEventListener('reading', (e) => {
-    GyroscopeHandler(e)
+    document.getElementById('velocity_x').innerHTML =
+      'Angular velocity along the X-axis ' + sensor.x
+    document.getElementById('velocity_y').innerHTML =
+      'Angular velocity along the Y-axis ' + sensor.y
+    document.getElementById('velocity_z').innerHTML =
+      'Angular velocity along the Z-axis ' + sensor.z
+    let current = e.timeStamp
+    let dt = (current - timestamp) * NS2S
+    document.getElementById('timestamp_test').innerHTML =
+      'Times triggered: ' + accumTimes
+    let x = sensor.x
+    let y = sensor.y
+    let z = sensor.z
+
+    let eps = 0.3
+    let angSpeed = Math.sqrt(x * x + y * y + z * z)
+    if (angSpeed > eps) {
+      x /= angSpeed
+      y /= angSpeed
+      z /= angSpeed
+    }
+    let thetaOverTwo = (angSpeed * dt) / 2.0
+    let sinTheta = Math.sin(thetaOverTwo)
+    let cosTheta = Math.cos(thetaOverTwo)
+
+    deltaRotVec = Array(4)
+    deltaRotVec[0] = sinTheta * x
+    deltaRotVec[1] = sinTheta * y
+    deltaRotVec[2] = sinTheta * z
+    deltaRotVec[3] = cosTheta
+
+    timestamp = current
+    getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
     draw()
   })
   sensor.onerror = (e) => {
     //alert(e.error.name, e.error.message)
   }
   sensor.start()
-}
-function GyroscopeHandler(e) {
-  document.getElementById('velocity_x').innerHTML =
-    'Angular velocity along the X-axis ' + sensor.x
-  document.getElementById('velocity_y').innerHTML =
-    'Angular velocity along the Y-axis ' + sensor.y
-  document.getElementById('velocity_z').innerHTML =
-    'Angular velocity along the Z-axis ' + sensor.z
-  let current = e.timeStamp
-  let dt = (current - timestamp) * NS2S
-  document.getElementById('timestamp_test').innerHTML =
-    'Times triggered: ' + accumTimes
-  let x = sensor.x
-  let y = sensor.y
-  let z = sensor.z
-
-  let eps = 0.3
-  let angSpeed = Math.sqrt(x * x + y * y + z * z)
-  if (angSpeed > eps) {
-    x /= angSpeed
-    y /= angSpeed
-    z /= angSpeed
-  }
-  let thetaOverTwo = (angSpeed * dt) / 2.0
-  let sinTheta = Math.sin(thetaOverTwo)
-  let cosTheta = Math.cos(thetaOverTwo)
-
-  deltaRotVec = Array(4)
-  deltaRotVec[0] = sinTheta * x
-  deltaRotVec[1] = sinTheta * y
-  deltaRotVec[2] = sinTheta * z
-  deltaRotVec[3] = cosTheta
-
-  timestamp = current
-  getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
 }
 
 function getRotationMatrixFromVector(R, rotationVector) {
