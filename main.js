@@ -91,13 +91,13 @@ function draw() {
   let matAccum0 = m4.multiply(rotateToPointZero, modelView)
   //let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
   let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
-  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
+  let matAccum3 = m4.multiply(orientationRotateMatrix, projection)
 
   // First pass for left eye, drawing red component only)
 
-  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum2)
   //let matrLeftFrustum = ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far)
-  gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projection)
+  gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, matAccum3)
 
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
   //gl.colorMask(true, false, false, false)
@@ -276,7 +276,7 @@ function init() {
 
   spaceball = new TrackballRotator(canvas, draw, 0)
 
-  //draw()
+  draw()
   ReadGyroscope()
 }
 
@@ -288,23 +288,21 @@ function ReadGyroscope() {
       'Angular velocity along the X-axis ' + sensor.x
     document.getElementById('velocity_y').innerHTML =
       'Angular velocity along the Y-axis ' + sensor.y
-    // document.getElementById('velocity_z').innerHTML =
-    //   'Angular velocity along the Z-axis ' + sensor.z
+    document.getElementById('velocity_z').innerHTML =
+      'Angular velocity along the Z-axis ' + sensor.z
     let current = e.timeStamp
     let dt = (current - timestamp) * NS2S
-    document.getElementById('timestamp_test').innerHTML =
-      'Times triggered: ' + accumTimes
     let x = sensor.x
     let y = sensor.y
     let z = sensor.z
 
     let eps = 0.3
     let angSpeed = Math.sqrt(x * x + y * y + z * z)
-    if (angSpeed > eps) {
-      x /= angSpeed
-      y /= angSpeed
-      z /= angSpeed
-    }
+    // if (angSpeed > eps) {
+    //   x /= angSpeed
+    //   y /= angSpeed
+    //   z /= angSpeed
+    // }
     let thetaOverTwo = (angSpeed * dt) / 2.0
     let sinTheta = Math.sin(thetaOverTwo)
     let cosTheta = Math.cos(thetaOverTwo)
@@ -317,11 +315,7 @@ function ReadGyroscope() {
 
     timestamp = current
     getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
-    document.getElementById('velocity_z').innerHTML =
-      'Angular velocity along the Z-axis1 ' + sensor.z
     draw()
-    document.getElementById('velocity_z').innerHTML =
-      'Angular velocity along the Z-axis2 ' + sensor.z
   })
   sensor.onerror = (e) => {
     //alert(e.error.name, e.error.message)
