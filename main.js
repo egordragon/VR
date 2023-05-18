@@ -276,7 +276,7 @@ function init() {
 
   spaceball = new TrackballRotator(canvas, draw, 0)
 
-  draw()
+  //draw()
   ReadGyroscope()
 }
 
@@ -285,6 +285,7 @@ function ReadGyroscope() {
   let sensor = new Gyroscope({ frequency: 5 })
   sensor.addEventListener('reading', (e) => {
     GyroscopeHandler(e)
+    draw()
   })
   sensor.onerror = (e) => {
     //alert(e.error.name, e.error.message)
@@ -325,8 +326,6 @@ function GyroscopeHandler(e) {
 
   timestamp = current
   getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
-  draw()
-  //let draw = draw()
 }
 
 function getRotationMatrixFromVector(R, rotationVector) {
