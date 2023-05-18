@@ -317,7 +317,7 @@ function ReadGyroscope() {
 
     timestamp = current
     getRotationMatrixFromVector(orientationRotateMatrix, deltaRotVec)
-    draw()
+    draw
   })
   sensor.onerror = (e) => {
     //alert(e.error.name, e.error.message)
