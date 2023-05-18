@@ -68,6 +68,7 @@ function draw() {
 
   /* Get the view matrix from the SimpleRotator object.*/
   let modelView = spaceball.getViewMatrix()
+  console.log(modelView)
 
   let rotateToPointZero = m4.axisRotation([0.707, 0.707, 0], 0.7)
   let translateToPointZero = m4.translation(0, 0, -10)
@@ -88,12 +89,14 @@ function draw() {
   /* Draw the six faces of a cube, with different colors. */
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
 
-  let matAccum0 = m4.multiply(rotateToPointZero, modelView)
-  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
+  let matAccum0 = m4.multiply(rotateToPointZero, orientationRotateMatrix)
+  //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
   //let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
-  let matAccum2 = m4.multiply(translateToPointZero, matAccum3)
+  let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
+  console.log(matAccum0)
 
-  document.getElementById('matrix0').innerHTML = 'Matrix 0 elem1 ' + matAccum0
+  document.getElementById('matrix0').innerHTML =
+    'Matrix 0 elem ' + orientationRotateMatrix[0]
   document.getElementById('matrix1').innerHTML =
     'Matrix 1 elem ' + orientationRotateMatrix[1]
   document.getElementById('matrix2').innerHTML =
@@ -340,10 +343,10 @@ function ReadGyroscope() {
     let cosTheta = Math.cos(thetaOverTwo)
 
     let deltaRotVec = Array(4)
-    deltaRotVec[0] = sinTheta * x * 100
-    deltaRotVec[1] = sinTheta * y * 100
-    deltaRotVec[2] = sinTheta * z * 100
-    deltaRotVec[3] = cosTheta * 100
+    deltaRotVec[0] = sinTheta * x
+    deltaRotVec[1] = sinTheta * y
+    deltaRotVec[2] = sinTheta * z
+    deltaRotVec[3] = cosTheta
 
     let deltaRotationMatrix = Array(16)
 
