@@ -91,9 +91,9 @@ function draw() {
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
 
   let matAccum0 = m4.multiply(rotateToPointZero, orientationRotateMatrix)
-  //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
+  let matAccum2 = m4.multiply(modelView, matAccum0)
   //let matAccum1 = m4.multiply(translateLeftEye, matAccum3)
-  let matAccum3 = m4.multiply(translateToPointZero, matAccum0)
+  let matAccum3 = m4.multiply(translateToPointZero, matAccum2)
   //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
 
   // First pass for left eye, drawing red component only)
@@ -297,9 +297,9 @@ function ReadGyroscope() {
       'Angular velocity along the Z-axis ' + sensor.z
     let current = e.timeStamp
     let dt = (current - timestamp) * NS2S
-    let x = sensor.x
-    let y = sensor.y
-    let z = sensor.z
+    let x = sensor.x * 600
+    let y = sensor.y * 600
+    let z = sensor.z * 600
 
     let eps = 0.3
     let angSpeed = Math.sqrt(x * x + y * y + z * z)
@@ -313,10 +313,10 @@ function ReadGyroscope() {
     let cosTheta = Math.cos(thetaOverTwo)
 
     let deltaRotVec = Array(4)
-    deltaRotVec[0] = sinTheta * x * 600
-    deltaRotVec[1] = sinTheta * y * 600
-    deltaRotVec[2] = sinTheta * z * 600
-    deltaRotVec[3] = cosTheta * 600
+    deltaRotVec[0] = sinTheta * x
+    deltaRotVec[1] = sinTheta * y
+    deltaRotVec[2] = sinTheta * z
+    deltaRotVec[3] = cosTheta
 
     let deltaRotationMatrix = Array(16)
 
