@@ -96,39 +96,6 @@ function draw() {
   let matAccum3 = m4.multiply(translateToPointZero, matAccum0)
   //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
 
-  document.getElementById('matrix0').innerHTML =
-    'Matrix 0 elem ' + orientationRotateMatrix[0]
-  document.getElementById('matrix1').innerHTML =
-    'Matrix 1 elem ' + orientationRotateMatrix[1]
-  document.getElementById('matrix2').innerHTML =
-    'Matrix 2 elem ' + orientationRotateMatrix[2]
-  document.getElementById('matrix3').innerHTML =
-    'Matrix 3 elem ' + orientationRotateMatrix[3]
-  document.getElementById('matrix4').innerHTML =
-    'Matrix 4 elem ' + orientationRotateMatrix[4]
-  document.getElementById('matrix5').innerHTML =
-    'Matrix 5 elem ' + orientationRotateMatrix[5]
-  document.getElementById('matrix6').innerHTML =
-    'Matrix 6 elem ' + orientationRotateMatrix[6]
-  document.getElementById('matrix7').innerHTML =
-    'Matrix 7 elem ' + orientationRotateMatrix[7]
-  document.getElementById('matrix8').innerHTML =
-    'Matrix 8 elem ' + orientationRotateMatrix[8]
-  document.getElementById('matrix9').innerHTML =
-    'Matrix 9 elem ' + orientationRotateMatrix[9]
-  document.getElementById('matrix10').innerHTML =
-    'Matrix 10 elem ' + orientationRotateMatrix[10]
-  document.getElementById('matrix11').innerHTML =
-    'Matrix 11 elem ' + orientationRotateMatrix[11]
-  document.getElementById('matrix12').innerHTML =
-    'Matrix 12 elem ' + orientationRotateMatrix[12]
-  document.getElementById('matrix13').innerHTML =
-    'Matrix 13 elem ' + orientationRotateMatrix[13]
-  document.getElementById('matrix14').innerHTML =
-    'Matrix 14 elem ' + orientationRotateMatrix[14]
-  document.getElementById('matrix15').innerHTML =
-    'Matrix 151 elem ' + orientationRotateMatrix[15]
-
   // First pass for left eye, drawing red component only)
 
   gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
@@ -168,31 +135,31 @@ function draw() {
   // gl.colorMask(true, true, true, true)
 }
 
-function ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far) {
-  let top, bottom, left, right
-  top = near * Math.tan(fov / 2)
-  bottom = -top
-  let a = asprat * Math.tan(fov / 2) * convrg
-  let b = a - eyesep / 2
-  let c = a + eyesep / 2
-  left = (-b * near) / convrg
-  right = (c * near) / convrg
+// function ApplyLeftFrustum(convrg, eyesep, asprat, fov, near, far) {
+//   let top, bottom, left, right
+//   top = near * Math.tan(fov / 2)
+//   bottom = -top
+//   let a = asprat * Math.tan(fov / 2) * convrg
+//   let b = a - eyesep / 2
+//   let c = a + eyesep / 2
+//   left = (-b * near) / convrg
+//   right = (c * near) / convrg
 
-  return m4.frustum(left, right, bottom, top, near, far)
-}
+//   return m4.frustum(left, right, bottom, top, near, far)
+// }
 
-function ApplyRightFrustum(convrg, eyesep, asprat, fov, near, far) {
-  let top, bottom, left, right
-  top = near * Math.tan(fov / 2)
-  bottom = -top
-  let a = asprat * Math.tan(fov / 2) * convrg
-  let b = a - eyesep / 2
-  let c = a + eyesep / 2
-  left = (-c * near) / convrg
-  right = (b * near) / convrg
+// function ApplyRightFrustum(convrg, eyesep, asprat, fov, near, far) {
+//   let top, bottom, left, right
+//   top = near * Math.tan(fov / 2)
+//   bottom = -top
+//   let a = asprat * Math.tan(fov / 2) * convrg
+//   let b = a - eyesep / 2
+//   let c = a + eyesep / 2
+//   left = (-c * near) / convrg
+//   right = (b * near) / convrg
 
-  return m4.frustum(left, right, bottom, top, near, far)
-}
+//   return m4.frustum(left, right, bottom, top, near, far)
+// }
 
 function CreateSurfaceData() {
   let vertexList = []
@@ -349,7 +316,7 @@ function ReadGyroscope() {
     deltaRotVec[0] = sinTheta * x * 100
     deltaRotVec[1] = sinTheta * y * 100
     deltaRotVec[2] = sinTheta * z * 100
-    deltaRotVec[3] = cosTheta
+    deltaRotVec[3] = cosTheta * 100
 
     let deltaRotationMatrix = Array(16)
 
