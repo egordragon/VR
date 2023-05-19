@@ -86,10 +86,10 @@ function draw() {
   /* Draw the six faces of a cube, with different colors. */
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
 
-  let matAccum0 = m4.multiply(rotateToPointZero, modelView)
+  let matAccum0 = m4.multiply(rotateToPointZero, orientationRotateMatrix)
   //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
-  let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
-  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
+  let matAccum2 = m4.multiply(modelView, matAccum0)
+  let matAccum3 = m4.multiply(translateToPointZero, matAccum2)
 
   gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projection)
@@ -261,9 +261,9 @@ function ReadGyroscope() {
       'Angular velocity along the Z-axis ' + sensor.z
     let current = e.timeStamp
     let dt = (current - timestamp) * NS2S
-    let x = sensor.x
-    let y = sensor.y
-    let z = sensor.z
+    let x = sensor.x * 400
+    let y = sensor.y * 400
+    let z = sensor.z * 400
 
     let eps = 0.3
     let angSpeed = Math.sqrt(x * x + y * y + z * z)
@@ -277,10 +277,10 @@ function ReadGyroscope() {
     let cosTheta = Math.cos(thetaOverTwo)
 
     let deltaRotVec = Array(4)
-    deltaRotVec[0] = sinTheta * x * 100
-    deltaRotVec[1] = sinTheta * y * 100
-    deltaRotVec[2] = sinTheta * z * 100
-    deltaRotVec[3] = cosTheta * 100
+    deltaRotVec[0] = sinTheta * x
+    deltaRotVec[1] = sinTheta * y
+    deltaRotVec[2] = sinTheta * z
+    deltaRotVec[3] = cosTheta
 
     let deltaRotationMatrix = Array(16)
 
