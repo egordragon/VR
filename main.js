@@ -303,20 +303,20 @@ function ReadGyroscope() {
 
     let eps = 0.3
     let angSpeed = Math.sqrt(x * x + y * y + z * z)
-    // if (angSpeed > eps) {
-    //   x /= angSpeed
-    //   y /= angSpeed
-    //   z /= angSpeed
-    // }
+    if (angSpeed > eps) {
+      x /= angSpeed
+      y /= angSpeed
+      z /= angSpeed
+    }
     let thetaOverTwo = (angSpeed * dt) / 2.0
     let sinTheta = Math.sin(thetaOverTwo)
     let cosTheta = Math.cos(thetaOverTwo)
 
     let deltaRotVec = Array(4)
-    deltaRotVec[0] = sinTheta * x * 100
-    deltaRotVec[1] = sinTheta * y * 100
-    deltaRotVec[2] = sinTheta * z * 100
-    deltaRotVec[3] = cosTheta * 100
+    deltaRotVec[0] = sinTheta * x * 400
+    deltaRotVec[1] = sinTheta * y * 400
+    deltaRotVec[2] = sinTheta * z * 400
+    deltaRotVec[3] = cosTheta * 400
 
     let deltaRotationMatrix = Array(16)
 
