@@ -9,6 +9,13 @@ let orientationRotateMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
 
 let sound = { audioCtx: null, source: null, panner: null, filter: null }
 let audioSource = null
+let sphere
+let sphereRadius = 0.5,
+  sphereWidth = 20,
+  sphereHeight = 20
+let sphereX = 0,
+  sphereY = 0,
+  sphereZ = 0
 
 function deg2rad(angle) {
   return (angle * Math.PI) / 180
@@ -64,6 +71,12 @@ function draw() {
   gl.clearColor(1, 1, 1, 1)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
+  if (sound.panner) {
+    sound.panner.positionX.value = parseFloat(sphereX)
+    sound.panner.positionY.value = parseFloat(sphereY)
+    sound.panner.positionZ.value = parseFloat(sphereZ)
+  }
+
   /* Set the values of the projection transformation */
   let projection = m4.perspective(Math.PI / 8, 1, 8, 12)
 
@@ -99,6 +112,14 @@ function draw() {
 
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
   //gl.colorMask(true, false, false, false)
+  gl.uniform4fv(shProgram.iColor, [1, 0, 0, 1])
+  sphere.Draw()
+  gl.clear(gl.DEPTH_BUFFER_BIT)
+
+  matAccum0 = m4.multiply(rotateToPointZero, modelView)
+  matAccum3 = m4.multiply(translateToPointZero, matAccum0)
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
+  gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projection)
   gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
   surface.Draw()
 }
@@ -188,6 +209,11 @@ function initGL() {
   surface = new Model('Surface')
   surface.BufferData(CreateSurfaceData())
 
+  sphere = new Model('Sphere')
+  sphere.BufferData(
+    createSphereCoordinates(sphereRadius, sphereWidth, sphereHeight)
+  )
+
   gl.enable(gl.DEPTH_TEST)
 }
 
@@ -268,6 +294,10 @@ function ReadGyroscope() {
     let x = sensor.x * 400
     let y = sensor.y * 400
     let z = sensor.z * 400
+
+    sphereX += x
+    sphereY += y
+    sphereZ += z
 
     let eps = 0.3
     let angSpeed = Math.sqrt(x * x + y * y + z * z)
@@ -405,4 +435,28 @@ function beginAudio() {
     }
   })
   audioSource.play()
+}
+
+function createSphereCoordinates(radius, widthSegments, heightSegments) {
+  let coordinates = []
+
+  for (var i = 0; i <= heightSegments; i++) {
+    let theta = (i * Math.PI) / heightSegments
+    let sinTheta = Math.sin(theta)
+    let cosTheta = Math.cos(theta)
+
+    for (var j = 0; j <= widthSegments; j++) {
+      let phi = (j * 2 * Math.PI) / widthSegments
+      let sinPhi = Math.sin(phi)
+      let cosPhi = Math.cos(phi)
+
+      let x = cosPhi * sinTheta
+      let y = cosTheta
+      let z = sinPhi * sinTheta
+
+      coordinates.push(x * radius, y * radius, z * radius)
+    }
+  }
+
+  return coordinates
 }
