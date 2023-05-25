@@ -72,9 +72,14 @@ function draw() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
   if (sound.panner) {
-    sound.panner.positionX.value = parseFloat(sphereX)
-    sound.panner.positionY.value = parseFloat(sphereY)
-    sound.panner.positionZ.value = parseFloat(sphereZ)
+    let transf = m4.transformPoint(orientationRotateMatrix, [
+      sphereX,
+      sphereY,
+      sphereZ,
+    ])
+    sound.panner.positionX.value = transf[0]
+    sound.panner.positionY.value = transf[1]
+    sound.panner.positionZ.value = transf[2]
   }
 
   /* Set the values of the projection transformation */
