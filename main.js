@@ -357,3 +357,35 @@ function getRotationMatrixFromVector(R, rotationVector) {
     R[15] = 1.0
   }
 }
+
+let sound = { audioCtx: null, source: null, panner: null, filter: null }
+
+function setupAudio() {
+  let audioSource = document.getElementById('audio')
+
+  audioSource.addEventListener('play', () => {
+    if (!sound.audioCtx) {
+      sound.audioCtx = new window.AudioContext()
+      sound.source = sound.audioCtx.createMediaElementSource(audioSource)
+      sound.panner = sound.audioCtx.createPanner()
+      sound.filter = sound.audioCtx.createBiquadFilter()
+
+      sound.source.connect(sound.panner)
+      sound.panner.connect(sound.filter)
+      sound.filter.connect(sound.audioCtx.destination)
+
+      sound.filter.type = 'bandpass'
+      sound.filter.Q = 500
+      sound.filter.frequency.value = 700
+    }
+    sound.audioCtx.resume()
+  })
+
+  audioSource.addEventListener('pause', () => {
+    sound.audioCtx.suspend()
+  })
+}
+
+function beginAudio() {
+  setupAudio()
+}
