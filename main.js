@@ -291,13 +291,13 @@ function ReadGyroscope() {
       'Angular velocity along the Z-axis ' + sensor.z
     let current = e.timeStamp
     let dt = (current - timestamp) * NS2S
-    let x = sensor.x * 80
-    let y = sensor.y * 80
-    let z = sensor.z * 80
+    let x = sensor.x * 100
+    let y = sensor.y * 100
+    let z = sensor.z * 100
 
-    sphereX = x
-    sphereY = y
-    sphereZ = z
+    sphereX += sensor.x
+    sphereY += sensor.y
+    sphereZ += sensor.z
 
     let eps = 0.3
     let angSpeed = Math.sqrt(x * x + y * y + z * z)
