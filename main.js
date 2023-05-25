@@ -7,6 +7,9 @@ let spaceball // A SimpleRotator object that lets the user rotate the view by mo
 let timestamp = 0
 let orientationRotateMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
 
+let sound = { audioCtx: null, source: null, panner: null, filter: null }
+let audioSource = null
+
 function deg2rad(angle) {
   return (angle * Math.PI) / 180
 }
@@ -247,6 +250,7 @@ function init() {
 
   draw()
   ReadGyroscope()
+  beginAudio()
 }
 
 function ReadGyroscope() {
@@ -293,7 +297,7 @@ function ReadGyroscope() {
     draw()
   })
   sensor.onerror = (e) => {
-    alert(e.error.name, e.error.message)
+    //alert(e.error.name, e.error.message)
   }
   sensor.start()
 }
@@ -358,10 +362,8 @@ function getRotationMatrixFromVector(R, rotationVector) {
   }
 }
 
-let sound = { audioCtx: null, source: null, panner: null, filter: null }
-
 function setupAudio() {
-  let audioSource = document.getElementById('audio')
+  audioSource = document.getElementById('audio')
 
   audioSource.addEventListener('play', () => {
     if (!sound.audioCtx) {
@@ -369,23 +371,38 @@ function setupAudio() {
       sound.source = sound.audioCtx.createMediaElementSource(audioSource)
       sound.panner = sound.audioCtx.createPanner()
       sound.filter = sound.audioCtx.createBiquadFilter()
+      sound.filter.type = 'bandpass'
+      sound.filter.detune.value = 10
+      sound.filter.frequency.value = 700
 
       sound.source.connect(sound.panner)
       sound.panner.connect(sound.filter)
       sound.filter.connect(sound.audioCtx.destination)
-
-      sound.filter.type = 'bandpass'
-      sound.filter.Q = 500
-      sound.filter.frequency.value = 700
     }
     sound.audioCtx.resume()
   })
 
   audioSource.addEventListener('pause', () => {
-    sound.audioCtx.suspend()
+    if (sound.audioCtx) {
+      sound.audioCtx.suspend()
+    }
   })
 }
 
 function beginAudio() {
   setupAudio()
+
+  let filterCheck = document.getElementById('filterCheck')
+
+  filterCheck.addEventListener('change', () => {
+    if (filterCheck.checked) {
+      sound.panner.disconnect()
+      sound.panner.connect(sound.filter)
+      sound.filter.connect(sound.audioCtx.destination)
+    } else {
+      sound.panner.disconnect()
+      sound.panner.connect(sound.audioCtx.destination)
+    }
+  })
+  audioSource.play()
 }
