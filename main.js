@@ -102,10 +102,10 @@ function draw() {
   /* Draw the six faces of a cube, with different colors. */
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
 
-  let matAccum0 = m4.multiply(rotateToPointZero, orientationRotateMatrix)
+  let matAccum0 = m4.multiply(rotateToPointZero, modelView)
   //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
-  let matAccum2 = m4.multiply(modelView, matAccum0)
-  let matAccum3 = m4.multiply(translateToPointZero, matAccum2)
+  let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
+  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
 
   gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projection)
@@ -295,9 +295,9 @@ function ReadGyroscope() {
     let y = sensor.y * 400
     let z = sensor.z * 400
 
-    sphereX += x
-    sphereY += y
-    sphereZ += z
+    sphereX += sensor.x * 10
+    sphereY += sensor.y * 10
+    sphereZ += sensor.z * 10
 
     let eps = 0.3
     let angSpeed = Math.sqrt(x * x + y * y + z * z)
