@@ -295,9 +295,9 @@ function ReadGyroscope() {
     let y = sensor.y * 400
     let z = sensor.z * 400
 
-    sphereX += sensor.x * 10
-    sphereY += sensor.y * 10
-    sphereZ += sensor.z * 10
+    sphereX += sensor.x
+    sphereY += sensor.y
+    sphereZ += sensor.z
 
     let eps = 0.3
     let angSpeed = Math.sqrt(x * x + y * y + z * z)
