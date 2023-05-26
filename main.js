@@ -77,9 +77,9 @@ function draw() {
       sphereY,
       sphereZ,
     ])
-    sphereX = transfPoint[0]
-    sphereY = transfPoint[1]
-    sphereZ = transfPoint[2]
+    sphereX += transfPoint[0]
+    sphereY += transfPoint[1]
+    sphereZ += transfPoint[2]
     sound.panner.positionX.value = sphereX
     sound.panner.positionY.value = sphereY
     sound.panner.positionZ.value = sphereZ
