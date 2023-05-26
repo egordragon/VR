@@ -292,7 +292,7 @@ function init() {
 }
 
 function ReadGyroscope() {
-  let sensor = new Gyroscope({ frequency: 10 })
+  let sensor = new Gyroscope({ frequency: 5 })
   sensor.addEventListener('reading', (e) => {
     let NS2S = 1.0 / 1000000000.0
     document.getElementById('velocity_x').innerHTML =
