@@ -13,9 +13,9 @@ let sphere
 let sphereRadius = 0.5,
   sphereWidth = 20,
   sphereHeight = 20
-let sphereX = 0,
-  sphereY = 0,
-  sphereZ = 0
+let sphereX = 1,
+  sphereY = 1,
+  sphereZ = 1
 
 function deg2rad(angle) {
   return (angle * Math.PI) / 180
