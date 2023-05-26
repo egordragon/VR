@@ -72,14 +72,17 @@ function draw() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
   if (sound.panner) {
-    let transf = m4.transformPoint(orientationRotateMatrix, [
+    let transfPoint = m4.transformPoint(orientationRotateMatrix, [
       sphereX,
       sphereY,
       sphereZ,
     ])
-    sound.panner.positionX.value = transf[0]
-    sound.panner.positionY.value = transf[1]
-    sound.panner.positionZ.value = transf[2]
+    sphereX = transfPoint[0]
+    sphereY = transfPoint[1]
+    sphereZ = transfPoint[2]
+    sound.panner.positionX.value = sphereX
+    sound.panner.positionY.value = sphereY
+    sound.panner.positionZ.value = sphereZ
   }
 
   /* Set the values of the projection transformation */
@@ -300,9 +303,9 @@ function ReadGyroscope() {
     let y = sensor.y * 100
     let z = sensor.z * 100
 
-    sphereX += sensor.x
-    sphereY += sensor.y
-    sphereZ += sensor.z
+    // sphereX += sensor.x
+    // sphereY += sensor.y
+    // sphereZ += sensor.z
 
     let eps = 0.3
     let angSpeed = Math.sqrt(x * x + y * y + z * z)
@@ -406,13 +409,15 @@ function setupAudio() {
       sound.source = sound.audioCtx.createMediaElementSource(audioSource)
       sound.panner = sound.audioCtx.createPanner()
       sound.filter = sound.audioCtx.createBiquadFilter()
+
+      // Filter settings
       sound.filter.type = 'bandpass'
       sound.filter.detune.value = 10
       sound.filter.frequency.value = 700
 
+      // Connecting nodes
       sound.source.connect(sound.panner)
-      sound.panner.connect(sound.filter)
-      sound.filter.connect(sound.audioCtx.destination)
+      sound.panner.connect(sound.audioCtx.destination)
     }
     sound.audioCtx.resume()
   })
