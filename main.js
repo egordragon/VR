@@ -13,9 +13,9 @@ let sphere
 let sphereRadius = 0.5,
   sphereWidth = 20,
   sphereHeight = 20
-let sphereX = 1,
-  sphereY = 1,
-  sphereZ = 1
+let sphereX = 0,
+  sphereY = 0,
+  sphereZ = 0
 
 function deg2rad(angle) {
   return (angle * Math.PI) / 180
@@ -116,8 +116,8 @@ function draw() {
 
   let matAccum0 = m4.multiply(rotateToPointZero, modelView)
   //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
-  let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
-  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum2)
+  //let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
+  let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
 
   gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projection)
