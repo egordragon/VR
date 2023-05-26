@@ -115,10 +115,10 @@ function draw() {
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
 
   let matAccum0 = m4.multiply(rotateToPointZero, modelView)
-  let matAccum1 = m4.multiply(orientationRotateMatrix, matAccum0)
+  //let matAccum1 = m4.multiply(orientationRotateMatrix, matAccum0)
   let translateSphere = m4.translation(sphereX, sphereY, sphereZ)
   //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
-  let matAccum2 = m4.multiply(translateToPointZero, matAccum1)
+  let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
   let matAccum3 = m4.multiply(translateSphere, matAccum2)
 
   gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
