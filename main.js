@@ -83,6 +83,10 @@ function draw() {
     sound.panner.positionX.value = sphereX
     sound.panner.positionY.value = sphereY
     sound.panner.positionZ.value = sphereZ
+
+    document.getElementById('sphereX').innerHTML = 'Sphere X: ' + sphereX
+    document.getElementById('sphereY').innerHTML = 'Sphere Y: ' + sphereY
+    document.getElementById('sphereZ').innerHTML = 'Sphere Z: ' + sphereZ
   }
 
   /* Set the values of the projection transformation */
