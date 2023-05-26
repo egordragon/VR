@@ -77,9 +77,9 @@ function draw() {
       sphereY,
       sphereZ,
     ])
-    sphereX += transfPoint[0]
-    sphereY += transfPoint[1]
-    sphereZ += transfPoint[2]
+    // sphereX += transfPoint[0]
+    // sphereY += transfPoint[1]
+    // sphereZ += transfPoint[2]
     sound.panner.positionX.value = sphereX
     sound.panner.positionY.value = sphereY
     sound.panner.positionZ.value = sphereZ
@@ -292,7 +292,7 @@ function init() {
 }
 
 function ReadGyroscope() {
-  let sensor = new Gyroscope({ frequency: 5 })
+  let sensor = new Gyroscope({ frequency: 10 })
   sensor.addEventListener('reading', (e) => {
     let NS2S = 1.0 / 1000000000.0
     document.getElementById('velocity_x').innerHTML =
@@ -307,9 +307,9 @@ function ReadGyroscope() {
     let y = sensor.y * 100
     let z = sensor.z * 100
 
-    // sphereX += sensor.x
-    // sphereY += sensor.y
-    // sphereZ += sensor.z
+    sphereX += sensor.x
+    sphereY += sensor.y
+    sphereZ += sensor.z
 
     let eps = 0.3
     let angSpeed = Math.sqrt(x * x + y * y + z * z)
