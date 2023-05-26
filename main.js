@@ -72,9 +72,12 @@ function draw() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
   if (sound.panner) {
-    sound.panner.positionX.value = parseFloat(sphereX)
-    sound.panner.positionY.value = parseFloat(sphereY)
-    sound.panner.positionZ.value = parseFloat(sphereZ)
+    sound.panner.positionX.value = sphereX
+    sound.panner.positionY.value = sphereY
+    sound.panner.positionZ.value = sphereZ
+    document.getElementById('sphereX').innerHTML = 'Sphere X: ' + sphereX
+    document.getElementById('sphereY').innerHTML = 'Sphere Y: ' + sphereY
+    document.getElementById('sphereZ').innerHTML = 'Sphere Z: ' + sphereZ
   }
 
   /* Set the values of the projection transformation */
@@ -102,10 +105,11 @@ function draw() {
   /* Draw the six faces of a cube, with different colors. */
   //gl.uniform4fv(shProgram.iColor, [1, 1, 0, 1])
 
-  let matAccum0 = m4.multiply(rotateToPointZero, orientationRotateMatrix)
+  let matAccum0 = m4.multiply(rotateToPointZero, modelView)
+  let translateSphere = m4.translation(sphereX, sphereY, sphereZ)
   //let matAccum3 = m4.multiply(orientationRotateMatrix, matAccum0)
-  let matAccum2 = m4.multiply(modelView, matAccum0)
-  let matAccum3 = m4.multiply(translateToPointZero, matAccum2)
+  let matAccum2 = m4.multiply(translateToPointZero, matAccum0)
+  let matAccum3 = m4.multiply(translateSphere, matAccum2)
 
   gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum3)
   gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, projection)
@@ -291,13 +295,13 @@ function ReadGyroscope() {
       'Angular velocity along the Z-axis ' + sensor.z
     let current = e.timeStamp
     let dt = (current - timestamp) * NS2S
-    let x = sensor.x * 400
-    let y = sensor.y * 400
-    let z = sensor.z * 400
+    let x = sensor.x * 100
+    let y = sensor.y * 100
+    let z = sensor.z * 100
 
-    sphereX += x
-    sphereY += y
-    sphereZ += z
+    sphereX += sensor.x
+    sphereY += sensor.y
+    sphereZ += sensor.z
 
     let eps = 0.3
     let angSpeed = Math.sqrt(x * x + y * y + z * z)
@@ -401,13 +405,15 @@ function setupAudio() {
       sound.source = sound.audioCtx.createMediaElementSource(audioSource)
       sound.panner = sound.audioCtx.createPanner()
       sound.filter = sound.audioCtx.createBiquadFilter()
+
+      // Filter settings
       sound.filter.type = 'bandpass'
       sound.filter.detune.value = 10
       sound.filter.frequency.value = 700
 
+      // Connecting nodes
       sound.source.connect(sound.panner)
-      sound.panner.connect(sound.filter)
-      sound.filter.connect(sound.audioCtx.destination)
+      sound.panner.connect(sound.audioCtx.destination)
     }
     sound.audioCtx.resume()
   })
