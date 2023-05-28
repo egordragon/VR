@@ -17,6 +17,7 @@ function deg2rad(angle) {
 function Model(name) {
   this.name = name
   this.iVertexBuffer = gl.createBuffer()
+  this.iTextureBuffer = gl.createBuffer()
   this.count = 0
 
   this.BufferData = function (vertices) {
@@ -25,12 +26,34 @@ function Model(name) {
 
     this.count = vertices.length / 3
   }
+  this.BufferData = function (vertices, texture) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.iVertexBuffer)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STREAM_DRAW)
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.iTextureBuffer)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texture), gl.STREAM_DRAW)
+    gl.enableVertexAttribArray(shProgram.iTextureCoords)
+    gl.vertexAttribPointer(shProgram.iTextureCoords, 2, gl.FLOAT, false, 0, 0)
+
+    this.count = vertices.length / 3
+  }
 
   this.Draw = function () {
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.iVertexBuffer)
-    gl.vertexAttribPointer(shProgram.iAttribVertex, 3, gl.FLOAT, false, 0, 0)
-    gl.enableVertexAttribArray(shProgram.iAttribVertex)
-    gl.drawArrays(gl.LINE_STRIP, 0, this.count)
+    if (this.name == 'Background') {
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.iVertexBuffer)
+      gl.vertexAttribPointer(shProgram.iAttribVertex, 3, gl.FLOAT, false, 0, 0)
+      gl.enableVertexAttribArray(shProgram.iAttribVertex)
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.iTextureBuffer)
+      gl.vertexAttribPointer(shProgram.iTextureCoords, 2, gl.FLOAT, false, 0, 0)
+      gl.enableVertexAttribArray(shProgram.iTextureCoords)
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.count)
+    } else {
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.iVertexBuffer)
+      gl.vertexAttribPointer(shProgram.iAttribVertex, 3, gl.FLOAT, false, 0, 0)
+      gl.enableVertexAttribArray(shProgram.iAttribVertex)
+      gl.drawArrays(gl.LINE_STRIP, 0, this.count)
+    }
   }
 }
 
@@ -62,7 +85,7 @@ function draw() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
   /* Set the values of the projection transformation */
-  //let projection = m4.perspective(Math.PI / 8, 1, 8, 12)
+  //let projection = m4.perspective(Math.PI / 4, 2, 8, 12)
 
   /* Get the view matrix from the SimpleRotator object.*/
   let modelView = spaceball.getViewMatrix()
@@ -97,6 +120,14 @@ function draw() {
   fov = document.getElementById('fov').value
   near = document.getElementById('near').value - 0.0
   convrg = document.getElementById('convergence').value
+
+  gl.uniform4fv(shProgram.iColor, [1, 1, 1, 1])
+  gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, unitMatrix)
+  gl.uniformMatrix4fv(shProgram.iProjectionMatrix, false, unitMatrix)
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, videoElem)
+  background.Draw()
+
+  gl.uniform4fv(shProgram.iColor, [0, 0, 0, 1])
 
   let translateLeftEye = m4.translation(-eyesep / 2, 0, 0)
   let matAccum0 = m4.multiply(rotateToPointZero, modelView)
@@ -218,11 +249,17 @@ function initGL() {
   shProgram.iAttribVertex = gl.getAttribLocation(prog, 'vertex')
   shProgram.iModelViewMatrix = gl.getUniformLocation(prog, 'ModelViewMatrix')
   shProgram.iProjectionMatrix = gl.getUniformLocation(prog, 'ProjectionMatrix')
-  shProgram.iColor = gl.getUniformLocation(prog, 'color')
+  shProgram.iColor = gl.getUniformLocation(prog, 'colorU')
   shProgram.iTextureCoords = gl.getAttribLocation(prog, 'textureCoords')
 
   surface = new Model('Surface')
   surface.BufferData(CreateSurfaceData())
+
+  background = new Model('Background')
+  background.BufferData(
+    [-1, -1, 0, 1, -1, 0, -1, 1, 0, 1, 1, 0],
+    [0, 0, 1, 0, 0, 1, 1, 1]
+  )
 
   gl.enable(gl.DEPTH_TEST)
 }

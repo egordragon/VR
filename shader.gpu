@@ -26,7 +26,7 @@ const fragmentShaderSource = `
    precision mediump float;
 #endif
 
-uniform vec4 color;
+varying vec4 color;
 varying vec2 vTextureCoords;
 uniform sampler2D tmu;
 uniform vec4 colorU;
