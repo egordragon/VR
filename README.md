@@ -1,2 +1,2 @@
-![Surface](https://user-images.githubusercontent.com/84422823/231241161-9deb5d73-852f-45fb-b3ee-9df6de5df1f1.png)
-![My photo](https://user-images.githubusercontent.com/84422823/231241198-b270abb5-603e-42df-9a14-5efcc5dd9dac.jpg)
+![image](https://github.com/egordragon/VR/assets/84422823/df0787e0-18e7-4fdc-9659-9ecc72d2c8ed)
+![image](https://github.com/egordragon/VR/assets/84422823/eab9c863-98d2-459b-af90-5c2962d49879)
