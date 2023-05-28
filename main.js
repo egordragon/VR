@@ -5,6 +5,10 @@ let surface // A surface model
 let shProgram // A shader program
 let spaceball // A SimpleRotator object that lets the user rotate the view by mouse.
 
+let webCamTexture, videoElem, background
+
+let unitMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+
 function deg2rad(angle) {
   return (angle * Math.PI) / 180
 }
@@ -26,8 +30,6 @@ function Model(name) {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.iVertexBuffer)
     gl.vertexAttribPointer(shProgram.iAttribVertex, 3, gl.FLOAT, false, 0, 0)
     gl.enableVertexAttribArray(shProgram.iAttribVertex)
-
-    //gl.uniform4fv(shProgram.iColor, [0, 0, 0, 1])
     gl.drawArrays(gl.LINE_STRIP, 0, this.count)
   }
 }
@@ -88,7 +90,7 @@ function draw() {
     eyesep = 1.0, // Eye Separation
     asprat = 1.3, // Aspect Ratio
     fov = Math.PI / 3, // FOV along Y in degrees
-    near = 4.0, // Near Clipping Distance
+    near = 9.0, // Near Clipping Distance
     far = 12.0 // Far Clipping Distance
 
   eyesep = document.getElementById('eyeSep').value
@@ -217,11 +219,12 @@ function initGL() {
   shProgram.iModelViewMatrix = gl.getUniformLocation(prog, 'ModelViewMatrix')
   shProgram.iProjectionMatrix = gl.getUniformLocation(prog, 'ProjectionMatrix')
   shProgram.iColor = gl.getUniformLocation(prog, 'color')
+  shProgram.iTextureCoords = gl.getAttribLocation(prog, 'textureCoords')
 
   surface = new Model('Surface')
   surface.BufferData(CreateSurfaceData())
 
-  //gl.enable(gl.DEPTH_TEST)
+  gl.enable(gl.DEPTH_TEST)
 }
 
 /* Creates a program for use in the WebGL context gl, and returns the
@@ -258,7 +261,7 @@ function createProgram(gl, vShader, fShader) {
 /**
  * initialization function that will be called when the page has loaded
  */
-function init() {
+async function init() {
   let canvas
   try {
     canvas = document.getElementById('webglcanvas')
@@ -280,6 +283,59 @@ function init() {
   }
 
   spaceball = new TrackballRotator(canvas, draw, 0)
+  await openCam()
+  window.setInterval(() => draw(), 60)
+}
 
-  draw()
+async function CreateWebCamTexture(width, height) {
+  // Create a texture
+  let textureID = gl.createTexture()
+  gl.bindTexture(gl.TEXTURE_2D, textureID)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA,
+    width,
+    height,
+    0,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    null
+  )
+
+  return textureID
+}
+
+async function openCam() {
+  let All_mediaDevices = navigator.mediaDevices
+  if (!All_mediaDevices || !All_mediaDevices.getUserMedia) {
+    console.log('getUserMedia() not supported.')
+    return
+  }
+  await All_mediaDevices.getUserMedia({
+    audio: false,
+    video: true,
+  })
+    .then(function (vidStream) {
+      videoElem = document.getElementById('webCam')
+      if ('srcObject' in videoElem) {
+        videoElem.srcObject = vidStream
+      } else {
+        videoElem.src = window.URL.createObjectURL(vidStream)
+      }
+      let width = videoElem.getAttributeNode('width').value
+      let height = videoElem.getAttributeNode('height').value
+      webCamTexture = CreateWebCamTexture(width, height)
+      videoElem.onloadedmetadata = function (e) {
+        videoElem.play()
+      }
+    })
+    .catch(function (e) {
+      console.log(e.name + ': ' + e.message)
+    })
 }
